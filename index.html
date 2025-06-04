@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <title>夾娃娃機遊玩記錄</title>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto p-4">
+    <div class="flex justify-end mb-4 items-center gap-2">
+      <span id="userEmail" class="text-sm"></span>
+      <button id="loginBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">登入</button>
+      <button id="logoutBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded hidden">登出</button>
+    </div>
+    <h1 class="text-2xl font-bold mb-6 text-center">夾娃娃機遊玩記錄</h1>
+    <form id="recordForm" class="flex flex-wrap gap-4 mb-6 items-end">
+      <div>
+        <label class="mr-2" for="dateInput">日期:</label>
+        <input type="date" id="dateInput" class="border rounded px-2 py-1 m-1" required />
+      </div>
+      <div>
+        <label class="mr-2" for="storeInput">店名:</label>
+        <input type="text" id="storeInput" placeholder="店名" class="border rounded px-2 py-1 m-1" required />
+      </div>
+      <div>
+        <label class="mr-2" for="spentInput">花費金額:</label>
+        <input type="number" id="spentInput" placeholder="花費金額" class="border rounded px-2 py-1 m-1" required />
+      </div>
+      <div>
+        <label class="mr-2" for="pointsInput">得到點數:</label>
+        <input type="number" id="pointsInput" placeholder="得到點數" class="border rounded px-2 py-1 m-1" required />
+      </div>
+      <div>
+        <label class="mr-2" for="valueInput">商品價值:</label>
+        <input type="number" id="valueInput" placeholder="商品價值" class="border rounded px-2 py-1 m-1" required />
+      </div>
+      <div>
+        <label class="mr-2" for="costInput">點數成本:</label>
+        <input type="number" step="0.1" id="costInput" class="border rounded px-2 py-1 m-1" />
+      </div>
+      <button id="saveBtn" type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">新增紀錄</button>
+    </form>
+    <table class="min-w-full table-auto border-collapse mt-4 w-full">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border px-4 py-2">日期</th>
+          <th class="border px-4 py-2">店名</th>
+          <th class="border px-4 py-2">花費金額</th>
+          <th class="border px-4 py-2">得到點數</th>
+          <th class="border px-4 py-2">商品價值</th>
+          <th class="border px-4 py-2">當日盈虧</th>
+          <th class="border px-4 py-2">操作</th>
+        </tr>
+      </thead>
+      <tbody id="recordTbody"></tbody>
+      <tfoot>
+        <tr class="bg-gray-200 font-bold">
+          <td class="border px-4 py-1" colspan="2">總計</td>
+          <td class="border px-4 py-1" id="totalSpent"></td>
+          <td class="border px-4 py-1" id="totalPoints"></td>
+          <td class="border px-4 py-1" id="totalValue"></td>
+          <td class="border px-4 py-1" id="totalProfit"></td>
+          <td class="border px-4 py-1"></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="flex flex-wrap gap-4 mt-4 items-center">
+      <button id="exportBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">匯出 CSV</button>
+      <input type="file" id="importInput" accept=".csv" class="border rounded px-2 py-1" />
+    </div>
+  </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQg7l0C2La_ZPdNBVpARNqQy60yJt_mMU",
+      authDomain: "test-project-13138.firebaseapp.com",
+      projectId: "test-project-13138",
+      storageBucket: "test-project-13138.firebasestorage.app",
+      messagingSenderId: "203751392916",
+      appId: "1:203751392916:web:cc85ec641443832d691681",
+      measurementId: "G-G0WYC7EXEP"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
