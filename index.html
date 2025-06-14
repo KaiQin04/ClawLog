@@ -44,6 +44,19 @@
       </div>
       <button id="saveBtn" type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">新增紀錄</button>
     </form>
+    <div class="flex flex-wrap gap-4 mb-4 items-end">
+      <div>
+        <label class="mr-2" for="filterInput">篩選店名:</label>
+        <input type="text" id="filterInput" placeholder="店名" class="border rounded px-2 py-1 m-1" />
+      </div>
+      <div>
+        <label class="mr-2" for="sortSelect">排序:</label>
+        <select id="sortSelect" class="border rounded px-2 py-1 m-1">
+          <option value="date">日期</option>
+          <option value="profit">盈虧</option>
+        </select>
+      </div>
+    </div>
     <table class="min-w-full table-auto border-collapse mt-4 w-full">
       <thead>
         <tr class="bg-gray-100">
