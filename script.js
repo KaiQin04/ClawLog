@@ -15,11 +15,15 @@ const valueInput = document.getElementById('valueInput');
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const userEmailEl = document.getElementById('userEmail');
+const filterInput = document.getElementById('filterInput');
+const sortSelect = document.getElementById('sortSelect');
 const db = firebase.firestore();
 let currentUser = null;
 let records = [];
 let editingId = null;
 let pointCost = 3.5;
+let filterText = '';
+let sortField = 'date';
 
 loginBtn.addEventListener('click', () => {
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -145,12 +149,21 @@ function clearForm() {
 
 function renderRecords() {
   tbody.innerHTML = '';
+  const filtered = records
+    .filter((r) => r.store.toLowerCase().includes(filterText))
+    .slice()
+    .sort((a, b) => {
+      if (sortField === 'profit') {
+        return b.profit - a.profit;
+      }
+      return a.date.localeCompare(b.date);
+    });
   let totalSpent = 0;
   let totalPoints = 0;
   let totalValue = 0;
   let totalProfit = 0;
   const fragment = document.createDocumentFragment();
-  records.forEach((rec, index) => {
+  filtered.forEach((rec, index) => {
     totalSpent += rec.spent;
     totalPoints += rec.points;
     totalValue += rec.value;
@@ -166,8 +179,8 @@ function renderRecords() {
       <td class="border px-4 py-1">${rec.value}</td>
       <td class="border px-4 py-1">${profitDisplay}</td>
       <td class="border px-4 py-1 text-center">
-        <button class="edit-btn text-blue-600 mr-2" data-index="${index}">編輯</button>
-        <button class="delete-btn text-red-600" data-index="${index}">刪除</button>
+        <button class="edit-btn text-blue-600 mr-2" data-id="${rec.id}">編輯</button>
+        <button class="delete-btn text-red-600" data-id="${rec.id}">刪除</button>
       </td>`;
     fragment.appendChild(tr);
   });
@@ -217,11 +230,21 @@ costInput.addEventListener('change', async function () {
   }
 });
 
+filterInput.addEventListener('input', function () {
+  filterText = filterInput.value.trim().toLowerCase();
+  renderRecords();
+});
+
+sortSelect.addEventListener('change', function () {
+  sortField = sortSelect.value;
+  renderRecords();
+});
+
 // 編輯/刪除事件委派
 tbody.addEventListener('click', async function(e) {
   if (e.target.classList.contains('edit-btn')) {
-    const idx = parseInt(e.target.getAttribute('data-index'));
-    const rec = records[idx];
+    const id = e.target.getAttribute('data-id');
+    const rec = records.find((r) => r.id === id);
     dateInput.value = rec.date;
     storeInput.value = rec.store;
     spentInput.value = rec.spent;
@@ -230,8 +253,8 @@ tbody.addEventListener('click', async function(e) {
     editingId = rec.id;
     saveBtn.textContent = '更新紀錄';
   } else if (e.target.classList.contains('delete-btn')) {
-    const idx = parseInt(e.target.getAttribute('data-index'));
-    const rec = records[idx];
+    const id = e.target.getAttribute('data-id');
+    const rec = records.find((r) => r.id === id);
     if (confirm('確定要刪除此紀錄嗎？')) {
       await removeRecord(rec.id);
       if (editingId === rec.id) {
