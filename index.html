@@ -50,9 +50,13 @@
         <input type="text" id="filterInput" placeholder="店名" class="border rounded px-2 py-1 m-1" />
       </div>
       <div>
+        <label class="mr-2" for="monthFilter">篩選月份:</label>
+        <input type="month" id="monthFilter" class="border rounded px-2 py-1 m-1" />
+      </div>
+      <div>
         <label class="mr-2" for="sortSelect">排序:</label>
         <select id="sortSelect" class="border rounded px-2 py-1 m-1">
-          <option value="date">日期</option>
+          <option value="date">日期(最新在前)</option>
           <option value="profit">盈虧</option>
         </select>
       </div>

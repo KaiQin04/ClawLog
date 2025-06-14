@@ -16,6 +16,7 @@ const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const userEmailEl = document.getElementById('userEmail');
 const filterInput = document.getElementById('filterInput');
+const monthFilter = document.getElementById('monthFilter');
 const sortSelect = document.getElementById('sortSelect');
 const db = firebase.firestore();
 let currentUser = null;
@@ -23,6 +24,7 @@ let records = [];
 let editingId = null;
 let pointCost = 3.5;
 let filterText = '';
+let filterMonth = '';
 let sortField = 'date';
 
 loginBtn.addEventListener('click', () => {
@@ -50,7 +52,7 @@ async function loadRecords() {
     .collection('users')
     .doc(currentUser.uid)
     .collection('records')
-    .orderBy('date')
+    .orderBy('date', 'desc')
     .get();
   records = snap.docs.map((d) => {
     const data = d.data();
@@ -135,6 +137,10 @@ firebase.auth().onAuthStateChanged(async (user) => {
     records = [];
     pointCost = 3.5;
     costInput.value = '';
+    filterText = '';
+    filterMonth = '';
+    filterInput.value = '';
+    monthFilter.value = '';
     renderRecords();
   }
 });
@@ -150,13 +156,16 @@ function clearForm() {
 function renderRecords() {
   tbody.innerHTML = '';
   const filtered = records
-    .filter((r) => r.store.toLowerCase().includes(filterText))
+    .filter((r) =>
+      r.store.toLowerCase().includes(filterText) &&
+      (!filterMonth || r.date.startsWith(filterMonth))
+    )
     .slice()
     .sort((a, b) => {
       if (sortField === 'profit') {
         return b.profit - a.profit;
       }
-      return a.date.localeCompare(b.date);
+      return b.date.localeCompare(a.date);
     });
   let totalSpent = 0;
   let totalPoints = 0;
@@ -232,6 +241,11 @@ costInput.addEventListener('change', async function () {
 
 filterInput.addEventListener('input', function () {
   filterText = filterInput.value.trim().toLowerCase();
+  renderRecords();
+});
+
+monthFilter.addEventListener('change', function () {
+  filterMonth = monthFilter.value;
   renderRecords();
 });
 
