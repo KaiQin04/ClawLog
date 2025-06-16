@@ -18,6 +18,9 @@ const userEmailEl = document.getElementById('userEmail');
 const filterInput = document.getElementById('filterInput');
 const monthFilter = document.getElementById('monthFilter');
 const sortSelect = document.getElementById('sortSelect');
+const LOCAL_RECORDS_KEY = 'clawRecords';
+const LOCAL_COST_KEY = 'clawPointCost';
+
 const db = firebase.firestore();
 let currentUser = null;
 let records = [];
@@ -53,6 +56,29 @@ function getCurrentDatetime() {
   return local.toISOString().slice(0, 16).replace('T', ' ');
 }
 
+function saveLocalRecords() {
+  localStorage.setItem(LOCAL_RECORDS_KEY, JSON.stringify(records));
+}
+
+function loadLocalRecords() {
+  const data = localStorage.getItem(LOCAL_RECORDS_KEY);
+  try {
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveLocalPointCost() {
+  localStorage.setItem(LOCAL_COST_KEY, pointCost.toString());
+}
+
+function loadLocalPointCost() {
+  const val = localStorage.getItem(LOCAL_COST_KEY);
+  const num = parseFloat(val);
+  return !isNaN(num) ? num : 3.5;
+}
+
 async function loadRecords() {
   const snap = await db
     .collection('users')
@@ -70,6 +96,7 @@ async function loadRecords() {
       profit: calculateProfit(data.spent, data.points, data.value),
     };
   });
+  saveLocalRecords();
   renderRecords();
 }
 
@@ -78,6 +105,7 @@ async function loadSettings() {
   if (doc.exists && doc.data().pointCost !== undefined) {
     pointCost = doc.data().pointCost;
     costInput.value = pointCost.toString();
+    saveLocalPointCost();
   }
 }
 
@@ -91,6 +119,7 @@ async function addRecord(record) {
   rec.id = ref.id;
   rec.profit = calculateProfit(rec.spent, rec.points, rec.value);
   records.push(rec);
+  saveLocalRecords();
   renderRecords();
 }
 
@@ -109,6 +138,7 @@ async function updateRecord(id, record) {
       profit: calculateProfit(record.spent, record.points, record.value),
     };
   }
+  saveLocalRecords();
   renderRecords();
 }
 
@@ -121,6 +151,7 @@ async function removeRecord(id) {
     .delete();
   const idx = records.findIndex((r) => r.id === id);
   if (idx > -1) records.splice(idx, 1);
+  saveLocalRecords();
   renderRecords();
 }
 
@@ -129,6 +160,7 @@ async function savePointCost() {
     { pointCost },
     { merge: true }
   );
+  saveLocalPointCost();
 }
 
 firebase.auth().onAuthStateChanged(async (user) => {
@@ -143,9 +175,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
     loginBtn.classList.remove('hidden');
     logoutBtn.classList.add('hidden');
     userEmailEl.textContent = '';
-    records = [];
-    pointCost = 3.5;
-    costInput.value = '';
+    records = loadLocalRecords();
+    pointCost = loadLocalPointCost();
+    costInput.value = pointCost.toString();
     filterText = '';
     filterMonth = '';
     filterInput.value = '';
@@ -244,11 +276,13 @@ costInput.addEventListener('change', async function () {
   if (!isNaN(val)) {
     pointCost = val;
     await savePointCost();
+    saveLocalPointCost();
     // Recalculate profit for existing records when point cost changes
     records = records.map((r) => ({
       ...r,
       profit: calculateProfit(r.spent, r.points, r.value),
     }));
+    saveLocalRecords();
     renderRecords();
   }
 });
