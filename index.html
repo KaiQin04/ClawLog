@@ -68,7 +68,8 @@
       <div>
         <label class="mr-2" for="sortSelect">排序:</label>
         <select id="sortSelect" class="border rounded px-2 py-1 m-1">
-          <option value="date">日期(最新在前)</option>
+          <option value="createdAt">建立時間</option>
+          <option value="date">日期</option>
           <option value="profit">盈虧</option>
         </select>
       </div>
@@ -76,6 +77,7 @@
     <table class="min-w-full table-auto border-collapse mt-4 w-full">
       <thead>
         <tr class="bg-gray-100">
+          <th class="border px-4 py-2">建立時間</th>
           <th class="border px-4 py-2">日期</th>
           <th class="border px-4 py-2">店名</th>
           <th class="border px-4 py-2">花費金額</th>
@@ -88,7 +90,7 @@
       <tbody id="recordTbody"></tbody>
       <tfoot>
         <tr class="bg-gray-200 font-bold">
-          <td class="border px-4 py-1" colspan="2">總計</td>
+          <td class="border px-4 py-1" colspan="3">總計</td>
           <td class="border px-4 py-1" id="totalSpent"></td>
           <td class="border px-4 py-1" id="totalPoints"></td>
           <td class="border px-4 py-1" id="totalValue"></td>
