@@ -25,7 +25,7 @@ let editingId = null;
 let pointCost = 3.5;
 let filterText = '';
 let filterMonth = '';
-let sortField = 'date';
+let sortField = 'createdAt';
 
 loginBtn.addEventListener('click', () => {
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -47,18 +47,26 @@ function formatProfit(profit) {
     : `<span class="text-red-600">-${formatted}</span>`;
 }
 
+function getCurrentDatetime() {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16).replace('T', ' ');
+}
+
 async function loadRecords() {
   const snap = await db
     .collection('users')
     .doc(currentUser.uid)
     .collection('records')
-    .orderBy('date', 'desc')
+    .orderBy('createdAt', 'desc')
     .get();
   records = snap.docs.map((d) => {
     const data = d.data();
+    const createdAt = data.createdAt || getCurrentDatetime();
     return {
       id: d.id,
       ...data,
+      createdAt,
       profit: calculateProfit(data.spent, data.points, data.value),
     };
   });
@@ -74,14 +82,15 @@ async function loadSettings() {
 }
 
 async function addRecord(record) {
+  const rec = { ...record, createdAt: record.createdAt || getCurrentDatetime() };
   const ref = await db
     .collection('users')
     .doc(currentUser.uid)
     .collection('records')
-    .add(record);
-  record.id = ref.id;
-  record.profit = calculateProfit(record.spent, record.points, record.value);
-  records.push(record);
+    .add(rec);
+  rec.id = ref.id;
+  rec.profit = calculateProfit(rec.spent, rec.points, rec.value);
+  records.push(rec);
   renderRecords();
 }
 
@@ -165,7 +174,10 @@ function renderRecords() {
       if (sortField === 'profit') {
         return b.profit - a.profit;
       }
-      return b.date.localeCompare(a.date);
+      if (sortField === 'date') {
+        return b.date.localeCompare(a.date);
+      }
+      return b.createdAt.localeCompare(a.createdAt);
     });
   let totalSpent = 0;
   let totalPoints = 0;
@@ -181,6 +193,7 @@ function renderRecords() {
     const tr = document.createElement('tr');
     tr.className = index % 2 ? 'even:bg-gray-50' : 'odd:bg-white';
     tr.innerHTML = `
+      <td class="border px-4 py-1">${rec.createdAt}</td>
       <td class="border px-4 py-1">${rec.date}</td>
       <td class="border px-4 py-1">${rec.store}</td>
       <td class="border px-4 py-1">${rec.spent}</td>
@@ -216,7 +229,8 @@ saveBtn.addEventListener('click', async function() {
   const baseRecord = { date, store, spent, points, value };
 
   if (editingId) {
-    await updateRecord(editingId, baseRecord);
+    const old = records.find((r) => r.id === editingId);
+    await updateRecord(editingId, { ...baseRecord, createdAt: old.createdAt });
     editingId = null;
     saveBtn.textContent = '新增紀錄';
   } else {
@@ -282,9 +296,9 @@ tbody.addEventListener('click', async function(e) {
 
 // 匯出 CSV
 exportBtn.addEventListener('click', function() {
-  let csvContent = "日期,店名,花費金額,得到點數,商品價值,當日盈虧\n";
+  let csvContent = "建立時間,日期,店名,花費金額,得到點數,商品價值,當日盈虧\n";
   records.forEach(rec => {
-    csvContent += `${rec.date},${rec.store},${rec.spent},${rec.points},${rec.value},${rec.profit}\n`;
+    csvContent += `${rec.createdAt},${rec.date},${rec.store},${rec.spent},${rec.points},${rec.value},${rec.profit}\n`;
   });
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
@@ -303,12 +317,12 @@ importInput.addEventListener('change', function() {
   reader.onload = function() {
     const lines = reader.result.split(/\r?\n/).filter((l) => l.trim());
     lines.slice(1).forEach((line) => {
-      const [date, store, spentStr, pointsStr, valueStr] = line.split(',');
+      const [createdAt, date, store, spentStr, pointsStr, valueStr] = line.split(',');
       if (!date) return;
       const spent = parseFloat(spentStr) || 0;
       const points = parseFloat(pointsStr) || 0;
       const value = parseFloat(valueStr) || 0;
-      addRecord({ date, store, spent, points, value });
+      addRecord({ date, store, spent, points, value, createdAt });
     });
     importInput.value = '';
   };
