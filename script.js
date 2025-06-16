@@ -79,23 +79,37 @@ function loadLocalPointCost() {
   return !isNaN(num) ? num : 3.5;
 }
 
+function deriveCreatedAt(data) {
+  if (data.createdAt) return data.createdAt;
+  if (data.date) {
+    const datePart = data.date.replace('T', ' ');
+    return datePart.includes(':') ? datePart : `${datePart} 13:00`;
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  return `${today} 13:00`;
+}
+
 async function loadRecords() {
   const snap = await db
     .collection('users')
     .doc(currentUser.uid)
     .collection('records')
-    .orderBy('createdAt', 'desc')
     .get();
-  records = snap.docs.map((d) => {
+  records = [];
+  for (const d of snap.docs) {
     const data = d.data();
-    const createdAt = data.createdAt || getCurrentDatetime();
-    return {
+    const createdAt = deriveCreatedAt(data);
+    if (!data.createdAt) {
+      await d.ref.update({ createdAt });
+    }
+    records.push({
       id: d.id,
       ...data,
       createdAt,
       profit: calculateProfit(data.spent, data.points, data.value),
-    };
-  });
+    });
+  }
+  records.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   saveLocalRecords();
   renderRecords();
 }
