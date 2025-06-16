@@ -20,11 +20,23 @@
     <form id="recordForm" class="flex flex-wrap gap-4 mb-6 items-end">
       <div>
         <label class="mr-2" for="dateInput">日期:</label>
-        <input type="date" id="dateInput" class="border rounded px-2 py-1 m-1" required />
+        <input type="datetime-local" id="dateInput" class="border rounded px-2 py-1 m-1" required />
       </div>
       <div>
         <label class="mr-2" for="storeInput">店名:</label>
-        <input type="text" id="storeInput" placeholder="店名" class="border rounded px-2 py-1 m-1" required />
+        <input
+          type="text"
+          id="storeInput"
+          list="storeOptions"
+          placeholder="店名"
+          class="border rounded px-2 py-1 m-1"
+          required
+        />
+        <datalist id="storeOptions">
+          <option value="喵店長復興店"></option>
+          <option value="喵店長林森店"></option>
+          <option value="喵店長桃園店"></option>
+        </datalist>
       </div>
       <div>
         <label class="mr-2" for="spentInput">花費金額:</label>
