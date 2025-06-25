@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夾娃娃機吉祥物設計</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 50px;
+      padding: 20px;
+    }
+
+    .mascot-container {
+      text-align: center;
+      color: white;
+    }
+
+    .mascot-container h3 {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    /* 設計1: 可愛夾子機器人 */
+    .claw-bot {
+      width: 150px;
+      height: 200px;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .claw-bot .head {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .claw-bot .eyes {
+      position: absolute;
+      top: 30px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .claw-bot .eye {
+      width: 25px;
+      height: 25px;
+      background: white;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .claw-bot .pupil {
+      width: 15px;
+      height: 15px;
+      background: #333;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      animation: lookAround 4s ease-in-out infinite;
+    }
+
+    .claw-bot .mouth {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 20px;
+      border-bottom: 4px solid #333;
+      border-radius: 0 0 40px 40px;
+    }
+
+    .claw-bot .claw {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+    }
+
+    .claw-bot .claw-arm {
+      width: 6px;
+      height: 40px;
+      background: #666;
+      position: absolute;
+      left: 37px;
+      top: -40px;
+    }
+
+    .claw-bot .claw-fingers {
+      position: absolute;
+      width: 80px;
+      height: 40px;
+      top: 0;
+      animation: grabbing 2s ease-in-out infinite;
+    }
+
+    .claw-bot .finger {
+      position: absolute;
+      width: 25px;
+      height: 35px;
+      background: #FF6B6B;
+      border-radius: 10px 10px 20px 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .claw-bot .finger-left {
+      left: 0;
+      transform: rotate(-20deg);
+      transform-origin: top center;
+    }
+
+    .claw-bot .finger-center {
+      left: 27.5px;
+    }
+
+    .claw-bot .finger-right {
+      right: 0;
+      transform: rotate(20deg);
+      transform-origin: top center;
+    }
+
+    /* 設計2: 圓滾滾吉祥物 */
+    .round-mascot {
+      width: 150px;
+      height: 150px;
+      position: relative;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .round-mascot .body {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .round-mascot .cheeks {
+      position: absolute;
+      top: 60px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .round-mascot .cheek {
+      width: 25px;
+      height: 20px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+    }
+
+    .round-mascot .eyes {
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      text-align: center;
+      font-size: 35px;
+    }
+
+    .round-mascot .mouth {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 25px;
+    }
+
+    .round-mascot .claw-hat {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 50px;
+      background: #FFD700;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 25px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+    }
+
+    /* 設計3: 夾子造型吉祥物 */
+    .claw-character {
+      width: 120px;
+      height: 180px;
+      position: relative;
+      animation: wiggle 3s ease-in-out infinite;
+    }
+
+    .claw-character .claw-body {
+      width: 100px;
+      height: 120px;
+      background: linear-gradient(45deg, #00C9FF, #92FE9D);
+      border-radius: 50px 50px 20px 20px;
+      position: absolute;
+      top: 30px;
+      left: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .claw-character .claw-top {
+      position: absolute;
+      top: 0;
+      left: 30px;
+      width: 60px;
+      height: 40px;
+      background: #666;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .claw-character .face {
+      position: absolute;
+      top: 50px;
+      width: 100px;
+      height: 80px;
+    }
+
+    .claw-character .star-eyes {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      font-size: 25px;
+    }
+
+    .claw-character .smile {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 25px;
+      border-bottom: 5px solid #333;
+      border-radius: 0 0 50px 50px;
+    }
+
+    .claw-character .arms {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .claw-character .arm {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(45deg, #00C9FF, #92FE9D);
+      border-radius: 50%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-30px); }
+      60% { transform: translateY(-15px); }
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    @keyframes lookAround {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(5px, 0); }
+      50% { transform: translate(5px, 5px); }
+      75% { transform: translate(-5px, 0); }
+    }
+
+    @keyframes grabbing {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); }
+    }
+
+    h1 {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 夾娃娃機吉祥物設計</h1>
+
+  <!-- 設計1: 可愛夾子機器人 -->
+  <div class="mascot-container">
+    <div class="claw-bot">
+      <div class="head">
+        <div class="eyes">
+          <div class="eye">
+            <div class="pupil"></div>
+          </div>
+          <div class="eye">
+            <div class="pupil"></div>
+          </div>
+        </div>
+        <div class="mouth"></div>
+      </div>
+      <div class="claw">
+        <div class="claw-arm"></div>
+        <div class="claw-fingers">
+          <div class="finger finger-left"></div>
+          <div class="finger finger-center"></div>
+          <div class="finger finger-right"></div>
+        </div>
+      </div>
+    </div>
+    <h3>夾夾機器人</h3>
+  </div>
+
+  <!-- 設計2: 圓滾滾吉祥物 -->
+  <div class="mascot-container">
+    <div class="round-mascot">
+      <div class="body">
+        <div class="claw-hat">🎯</div>
+        <div class="eyes">😊</div>
+        <div class="cheeks">
+          <div class="cheek"></div>
+          <div class="cheek"></div>
+        </div>
+        <div class="mouth">◡</div>
+      </div>
+    </div>
+    <h3>圓圓夾</h3>
+  </div>
+
+  <!-- 設計3: 夾子造型吉祥物 -->
+  <div class="mascot-container">
+    <div class="claw-character">
+      <div class="claw-top"></div>
+      <div class="claw-body">
+        <div class="face">
+          <div class="star-eyes">⭐ ⭐</div>
+          <div class="smile"></div>
+        </div>
+        <div class="arms">
+          <div class="arm"></div>
+          <div class="arm"></div>
+        </div>
+      </div>
+    </div>
+    <h3>夾寶寶</h3>
+  </div>
+</body>
+</html>
