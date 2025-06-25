@@ -7,101 +7,300 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <title>夾娃娃機遊玩記錄</title>
+  <title>🎯 夾娃娃機遊玩記錄</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .mascot {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      border-radius: 50%;
+      position: relative;
+      animation: bounce 2s infinite;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .mascot::before {
+      content: '🎯';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+    }
+    
+    .mascot::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 20px;
+      height: 20px;
+      background: #FF6B6B;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(180deg); }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .sparkle {
+      position: absolute;
+      color: #FFD700;
+      font-size: 1.5rem;
+      animation: sparkle 2s infinite;
+    }
+    
+    .button-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .table-row:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      transform: translateX(5px);
+      transition: all 0.3s ease;
+    }
+    
+    .floating-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+      animation: float 6s infinite linear;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+    
+    .success-animation {
+      animation: successPulse 0.6s ease-out;
+    }
+    
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); background-color: #10B981; }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-  <div class="container mx-auto p-4">
-    <div class="flex justify-end mb-4 items-center gap-2">
-      <span id="userEmail" class="text-sm"></span>
-      <button id="loginBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">登入</button>
-      <button id="logoutBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded hidden">登出</button>
+<body>
+  <!-- Floating Particles Background -->
+  <div class="floating-particles" id="particles"></div>
+  
+  <div class="container mx-auto p-4 fade-in-up">
+    <!-- Header with Mascot -->
+    <div class="text-center mb-8 relative">
+      <div class="mascot mx-auto mb-4"></div>
+      <div class="sparkle" style="top: 20px; left: 45%;">✨</div>
+      <div class="sparkle" style="top: 30px; right: 45%; animation-delay: 0.5s;">⭐</div>
+      <div class="sparkle" style="top: 10px; left: 55%; animation-delay: 1s;">✨</div>
+      <h1 class="text-4xl font-bold text-white mb-2 drop-shadow-lg">🎯 夾娃娃機遊玩記錄</h1>
+      <p class="text-white/80 text-lg">記錄你的夾娃娃冒險旅程！</p>
     </div>
-    <h1 class="text-2xl font-bold mb-6 text-center">夾娃娃機遊玩記錄</h1>
-    <form id="recordForm" class="flex flex-wrap gap-4 mb-6 items-end">
-      <div>
-        <label class="mr-2" for="dateInput">日期:</label>
-        <input type="datetime-local" id="dateInput" class="border rounded px-2 py-1 m-1" required />
-      </div>
-      <div>
-        <label class="mr-2" for="storeInput">店名:</label>
-        <input
-          type="text"
-          id="storeInput"
-          list="storeOptions"
-          placeholder="店名"
-          class="border rounded px-2 py-1 m-1"
-          required
-        />
-        <datalist id="storeOptions">
-          <option value="喵店長復興店"></option>
-          <option value="喵店長林森店"></option>
-          <option value="喵店長桃園店"></option>
-        </datalist>
-      </div>
-      <div>
-        <label class="mr-2" for="spentInput">花費金額:</label>
-        <input type="number" id="spentInput" placeholder="花費金額" class="border rounded px-2 py-1 m-1" required />
-      </div>
-      <div>
-        <label class="mr-2" for="pointsInput">得到點數:</label>
-        <input type="number" id="pointsInput" placeholder="得到點數" class="border rounded px-2 py-1 m-1" required />
-      </div>
-      <div>
-        <label class="mr-2" for="valueInput">商品價值:</label>
-        <input type="number" id="valueInput" placeholder="商品價值" class="border rounded px-2 py-1 m-1" required />
-      </div>
-      <div>
-        <label class="mr-2" for="costInput">點數成本:</label>
-        <input type="number" step="0.1" id="costInput" class="border rounded px-2 py-1 m-1" />
-      </div>
-      <button id="saveBtn" type="button" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">新增紀錄</button>
-    </form>
-    <div class="flex flex-wrap gap-4 mb-4 items-end">
-      <div>
-        <label class="mr-2" for="filterInput">篩選店名:</label>
-        <input type="text" id="filterInput" placeholder="店名" class="border rounded px-2 py-1 m-1" />
-      </div>
-      <div>
-        <label class="mr-2" for="monthFilter">篩選月份:</label>
-        <input type="month" id="monthFilter" class="border rounded px-2 py-1 m-1" />
-      </div>
-      <div>
-        <label class="mr-2" for="sortSelect">排序:</label>
-        <select id="sortSelect" class="border rounded px-2 py-1 m-1">
-          <option value="createdAt">建立時間</option>
-          <option value="date">日期</option>
-          <option value="profit">盈虧</option>
-        </select>
+    
+    <!-- Login Section -->
+    <div class="flex justify-end mb-6 items-center gap-3">
+      <span id="userEmail" class="text-white/90 text-sm font-medium"></span>
+      <button id="loginBtn" class="glass-effect text-white px-4 py-2 rounded-lg button-hover font-medium">
+        🚀 登入開始遊戲
+      </button>
+      <button id="logoutBtn" class="glass-effect text-white px-4 py-2 rounded-lg button-hover font-medium hidden">
+        👋 登出
+      </button>
+    </div>
+    
+    <!-- Input Form -->
+    <div class="glass-effect rounded-2xl p-6 mb-8 fade-in-up">
+      <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        🎮 新增遊戲記錄
+      </h2>
+      <form id="recordForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="dateInput">
+            📅 日期時間
+          </label>
+          <input type="datetime-local" id="dateInput" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" required />
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="storeInput">
+            🏪 店名
+          </label>
+          <input 
+            type="text" 
+            id="storeInput" 
+            list="storeOptions"
+            placeholder="輸入店名" 
+            class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" 
+            required 
+          />
+          <datalist id="storeOptions">
+            <option value="喵店長復興店"></option>
+            <option value="喵店長林森店"></option>
+            <option value="喵店長桃園店"></option>
+          </datalist>
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="spentInput">
+            💰 花費金額
+          </label>
+          <input type="number" id="spentInput" placeholder="花費金額" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" required />
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="pointsInput">
+            🎯 得到點數
+          </label>
+          <input type="number" id="pointsInput" placeholder="得到點數" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" required />
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="valueInput">
+            🎁 商品價值
+          </label>
+          <input type="number" id="valueInput" placeholder="商品價值" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" required />
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="costInput">
+            ⚡ 點數成本
+          </label>
+          <input type="number" step="0.1" id="costInput" placeholder="點數成本" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" />
+        </div>
+        <div class="md:col-span-2 lg:col-span-3 flex justify-center mt-4">
+          <button id="saveBtn" type="button" class="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white font-bold px-8 py-3 rounded-xl button-hover flex items-center gap-2 text-lg">
+            ✨ 新增紀錄
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Filters Section -->
+    <div class="glass-effect rounded-2xl p-6 mb-8 fade-in-up">
+      <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        🔍 篩選與排序
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="filterInput">
+            🏪 篩選店名
+          </label>
+          <input type="text" id="filterInput" placeholder="店名" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" />
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="monthFilter">
+            📅 篩選月份
+          </label>
+          <input type="month" id="monthFilter" class="glass-effect text-white placeholder-white/70 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50" />
+        </div>
+        <div class="space-y-2">
+          <label class="text-white font-medium flex items-center gap-1" for="sortSelect">
+            🔄 排序方式
+          </label>
+          <select id="sortSelect" class="glass-effect text-white rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-white/50">
+            <option value="createdAt">建立時間</option>
+            <option value="date">日期</option>
+            <option value="profit">盈虧</option>
+          </select>
+        </div>
       </div>
     </div>
-    <table class="min-w-full table-auto border-collapse mt-4 w-full">
-      <thead>
-        <tr class="bg-gray-100">
-          <th class="border px-4 py-2">建立時間</th>
-          <th class="border px-4 py-2">日期</th>
-          <th class="border px-4 py-2">店名</th>
-          <th class="border px-4 py-2">花費金額</th>
-          <th class="border px-4 py-2">得到點數</th>
-          <th class="border px-4 py-2">商品價值</th>
-          <th class="border px-4 py-2">當日盈虧</th>
-          <th class="border px-4 py-2">操作</th>
-        </tr>
-      </thead>
-      <tbody id="recordTbody"></tbody>
-      <tfoot>
-        <tr class="bg-gray-200 font-bold">
-          <td class="border px-4 py-1" colspan="3">總計</td>
-          <td class="border px-4 py-1" id="totalSpent"></td>
-          <td class="border px-4 py-1" id="totalPoints"></td>
-          <td class="border px-4 py-1" id="totalValue"></td>
-          <td class="border px-4 py-1" id="totalProfit"></td>
-          <td class="border px-4 py-1"></td>
-        </tr>
-      </tfoot>
-    </table>
-    <div class="flex flex-wrap gap-4 mt-4 items-center">
-      <button id="exportBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">匯出 CSV</button>
-      <input type="file" id="importInput" accept=".csv" class="border rounded px-2 py-1" />
+    
+    <!-- Records Table -->
+    <div class="glass-effect rounded-2xl p-6 mb-8 fade-in-up">
+      <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        📊 遊戲記錄列表
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="glass-effect">
+              <th class="text-white font-bold px-4 py-3 text-left rounded-tl-lg">⏰ 建立時間</th>
+              <th class="text-white font-bold px-4 py-3 text-left">📅 日期</th>
+              <th class="text-white font-bold px-4 py-3 text-left">🏪 店名</th>
+              <th class="text-white font-bold px-4 py-3 text-left">💰 花費</th>
+              <th class="text-white font-bold px-4 py-3 text-left">🎯 點數</th>
+              <th class="text-white font-bold px-4 py-3 text-left">🎁 價值</th>
+              <th class="text-white font-bold px-4 py-3 text-left">📈 盈虧</th>
+              <th class="text-white font-bold px-4 py-3 text-center rounded-tr-lg">⚙️ 操作</th>
+            </tr>
+          </thead>
+          <tbody id="recordTbody" class="divide-y divide-white/20"></tbody>
+          <tfoot>
+            <tr class="glass-effect font-bold border-t-2 border-white/30">
+              <td class="text-white px-4 py-3 rounded-bl-lg" colspan="3">🏆 總計</td>
+              <td class="text-white px-4 py-3" id="totalSpent"></td>
+              <td class="text-white px-4 py-3" id="totalPoints"></td>
+              <td class="text-white px-4 py-3" id="totalValue"></td>
+              <td class="text-white px-4 py-3" id="totalProfit"></td>
+              <td class="text-white px-4 py-3 rounded-br-lg"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Import/Export Section -->
+    <div class="glass-effect rounded-2xl p-6 fade-in-up">
+      <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        📥📤 資料管理
+      </h2>
+      <div class="flex flex-wrap gap-4 items-center">
+        <button id="exportBtn" class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-3 rounded-xl button-hover flex items-center gap-2 font-bold">
+          📤 匯出 CSV
+        </button>
+        <div class="flex items-center gap-2">
+          <label class="text-white font-medium">📥 匯入檔案:</label>
+          <input type="file" id="importInput" accept=".csv" class="glass-effect text-white file:bg-white/20 file:border-0 file:text-white file:px-4 file:py-2 file:rounded-lg file:mr-2 rounded-lg px-3 py-2" />
+        </div>
+      </div>
     </div>
   </div>
   <script>

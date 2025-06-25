@@ -30,6 +30,59 @@ let filterText = '';
 let filterMonth = '';
 let sortField = 'createdAt';
 
+// Initialize floating particles
+function createFloatingParticles() {
+  const particlesContainer = document.getElementById('particles');
+  const particles = ['🎯', '🎮', '🏆', '⭐', '✨', '🎊', '🎉', '💎'];
+  
+  setInterval(() => {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 2 + 's';
+    particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+    
+    particlesContainer.appendChild(particle);
+    
+    setTimeout(() => {
+      particle.remove();
+    }, 7000);
+  }, 3000);
+}
+
+// Show success animation
+function showSuccessAnimation(element) {
+  element.classList.add('success-animation');
+  setTimeout(() => {
+    element.classList.remove('success-animation');
+  }, 600);
+}
+
+// Create celebration effect
+function createCelebration() {
+  const celebrationEmojis = ['🎉', '🎊', '✨', '🏆', '🎯'];
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => {
+      const emoji = document.createElement('div');
+      emoji.textContent = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
+      emoji.style.position = 'fixed';
+      emoji.style.left = Math.random() * window.innerWidth + 'px';
+      emoji.style.top = Math.random() * window.innerHeight + 'px';
+      emoji.style.fontSize = '2rem';
+      emoji.style.zIndex = '9999';
+      emoji.style.pointerEvents = 'none';
+      emoji.style.animation = 'sparkle 2s ease-out forwards';
+      document.body.appendChild(emoji);
+      
+      setTimeout(() => emoji.remove(), 2000);
+    }, i * 100);
+  }
+}
+
+// Initialize particles when page loads
+document.addEventListener('DOMContentLoaded', createFloatingParticles);
+
 loginBtn.addEventListener('click', () => {
   const provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider);
@@ -237,25 +290,25 @@ function renderRecords() {
     totalProfit += rec.profit;
     const profitDisplay = formatProfit(rec.profit);
     const tr = document.createElement('tr');
-    tr.className = index % 2 ? 'even:bg-gray-50' : 'odd:bg-white';
+    tr.className = 'table-row hover:bg-white/10 transition-all duration-300';
     tr.innerHTML = `
-      <td class="border px-4 py-1">${rec.createdAt}</td>
-      <td class="border px-4 py-1">${rec.date}</td>
-      <td class="border px-4 py-1">${rec.store}</td>
-      <td class="border px-4 py-1">${rec.spent}</td>
-      <td class="border px-4 py-1">${rec.points}</td>
-      <td class="border px-4 py-1">${rec.value}</td>
-      <td class="border px-4 py-1">${profitDisplay}</td>
-      <td class="border px-4 py-1 text-center">
-        <button class="edit-btn text-blue-600 mr-2" data-id="${rec.id}">編輯</button>
-        <button class="delete-btn text-red-600" data-id="${rec.id}">刪除</button>
+      <td class="text-white/90 px-4 py-3">${rec.createdAt}</td>
+      <td class="text-white/90 px-4 py-3">${rec.date}</td>
+      <td class="text-white/90 px-4 py-3">${rec.store}</td>
+      <td class="text-white/90 px-4 py-3">$${rec.spent}</td>
+      <td class="text-white/90 px-4 py-3">${rec.points}</td>
+      <td class="text-white/90 px-4 py-3">$${rec.value}</td>
+      <td class="px-4 py-3">${profitDisplay}</td>
+      <td class="px-4 py-3 text-center">
+        <button class="edit-btn bg-blue-500/80 hover:bg-blue-600 text-white px-3 py-1 rounded-lg mr-2 transition-all duration-200 hover:scale-105" data-id="${rec.id}">✏️ 編輯</button>
+        <button class="delete-btn bg-red-500/80 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-all duration-200 hover:scale-105" data-id="${rec.id}">🗑️ 刪除</button>
       </td>`;
     fragment.appendChild(tr);
   });
   tbody.appendChild(fragment);
-  totalSpentEl.textContent = totalSpent.toFixed(2);
+  totalSpentEl.textContent = '$' + totalSpent.toFixed(2);
   totalPointsEl.textContent = totalPoints.toFixed(2);
-  totalValueEl.textContent = totalValue.toFixed(2);
+  totalValueEl.textContent = '$' + totalValue.toFixed(2);
   totalProfitEl.innerHTML = formatProfit(totalProfit);
 }
 
@@ -278,9 +331,12 @@ saveBtn.addEventListener('click', async function() {
     const old = records.find((r) => r.id === editingId);
     await updateRecord(editingId, { ...baseRecord, createdAt: old.createdAt });
     editingId = null;
-    saveBtn.textContent = '新增紀錄';
+    saveBtn.innerHTML = '✨ 新增紀錄';
+    showSuccessAnimation(saveBtn);
   } else {
     await addRecord(baseRecord);
+    createCelebration();
+    showSuccessAnimation(saveBtn);
   }
   clearForm();
 });
@@ -327,7 +383,7 @@ tbody.addEventListener('click', async function(e) {
     pointsInput.value = rec.points;
     valueInput.value = rec.value;
     editingId = rec.id;
-    saveBtn.textContent = '更新紀錄';
+    saveBtn.innerHTML = '💾 更新紀錄';
   } else if (e.target.classList.contains('delete-btn')) {
     const id = e.target.getAttribute('data-id');
     const rec = records.find((r) => r.id === id);
@@ -335,7 +391,7 @@ tbody.addEventListener('click', async function(e) {
       await removeRecord(rec.id);
       if (editingId === rec.id) {
         editingId = null;
-        saveBtn.textContent = '新增紀錄';
+        saveBtn.innerHTML = '✨ 新增紀錄';
         clearForm();
       }
     }
