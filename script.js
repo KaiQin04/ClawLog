@@ -99,8 +99,8 @@ function calculateProfit(spent, points, value) {
 function formatProfit(profit) {
   const formatted = Math.abs(profit).toFixed(2);
   return profit >= 0
-    ? `<span class="text-green-600">${formatted}</span>`
-    : `<span class="text-red-600">-${formatted}</span>`;
+    ? `<span class="text-emerald-400 font-bold">${formatted}</span>`
+    : `<span class="text-red-400 font-bold">-${formatted}</span>`;
 }
 
 function getCurrentDatetime() {
@@ -300,8 +300,8 @@ function renderRecords() {
       <td class="text-white/90 px-4 py-3">$${rec.value}</td>
       <td class="px-4 py-3">${profitDisplay}</td>
       <td class="px-4 py-3 text-center">
-        <button class="edit-btn bg-blue-500/80 hover:bg-blue-600 text-white px-3 py-1 rounded-lg mr-2 transition-all duration-200 hover:scale-105" data-id="${rec.id}">✏️ 編輯</button>
-        <button class="delete-btn bg-red-500/80 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-all duration-200 hover:scale-105" data-id="${rec.id}">🗑️ 刪除</button>
+        <button class="edit-btn bg-cyan-500/90 hover:bg-cyan-400 text-white px-3 py-1 rounded-lg mr-2 transition-all duration-200 hover:scale-105 shadow-md" data-id="${rec.id}">✏️ 編輯</button>
+        <button class="delete-btn bg-rose-500/90 hover:bg-rose-400 text-white px-3 py-1 rounded-lg transition-all duration-200 hover:scale-105 shadow-md" data-id="${rec.id}">🗑️ 刪除</button>
       </td>`;
     fragment.appendChild(tr);
   });
