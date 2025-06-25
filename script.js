@@ -83,6 +83,62 @@ function createCelebration() {
 // Initialize particles when page loads
 document.addEventListener('DOMContentLoaded', createFloatingParticles);
 
+// Mascot interactions
+const mascotPhrases = {
+  welcome: ['歡迎來玩！', '今天手氣如何？', '準備好夾大獎了嗎？', '我是夾夾，陪你一起玩！'],
+  success: ['太棒了！', '恭喜夾到寶物！', '手氣真好！', '繼續加油！', '太厲害了！'],
+  profit: ['賺到了耶！', '今天大豐收！', '運氣爆棚！', '太幸運了！'],
+  loss: ['沒關係，再接再厲！', '下次一定會更好！', '別灰心！', '繼續努力！'],
+  idle: ['記得記錄喔！', '要不要再玩一次？', '我在這裡陪你！', '加油加油！']
+};
+
+let lastInteractionTime = Date.now();
+
+function updateMascotSpeech(type = 'idle') {
+  const speechBubble = document.getElementById('speechBubble');
+  if (!speechBubble) return;
+  
+  const phrases = mascotPhrases[type] || mascotPhrases.idle;
+  const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+  speechBubble.textContent = randomPhrase;
+  
+  // Show speech bubble temporarily
+  const mascot = document.getElementById('fixedMascot');
+  if (mascot) {
+    mascot.querySelector('.speech-bubble').style.opacity = '1';
+    mascot.querySelector('.speech-bubble').style.transform = 'translateY(0)';
+    
+    setTimeout(() => {
+      mascot.querySelector('.speech-bubble').style.opacity = '';
+      mascot.querySelector('.speech-bubble').style.transform = '';
+    }, 3000);
+  }
+  
+  lastInteractionTime = Date.now();
+}
+
+// Show welcome message on load
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => updateMascotSpeech('welcome'), 1000);
+  
+  // Random idle messages
+  setInterval(() => {
+    if (Date.now() - lastInteractionTime > 30000) { // 30 seconds of no interaction
+      updateMascotSpeech('idle');
+    }
+  }, 30000);
+});
+
+// Click mascot to get random message
+document.addEventListener('DOMContentLoaded', () => {
+  const mascot = document.getElementById('fixedMascot');
+  if (mascot) {
+    mascot.addEventListener('click', () => {
+      updateMascotSpeech('idle');
+    });
+  }
+});
+
 loginBtn.addEventListener('click', () => {
   const provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider);
@@ -337,6 +393,16 @@ saveBtn.addEventListener('click', async function() {
     await addRecord(baseRecord);
     createCelebration();
     showSuccessAnimation(saveBtn);
+    
+    // Update mascot speech based on profit/loss
+    const profit = calculateProfit(spent, points, value);
+    if (profit > 0) {
+      updateMascotSpeech('profit');
+    } else if (profit < 0) {
+      updateMascotSpeech('loss');
+    } else {
+      updateMascotSpeech('success');
+    }
   }
   clearForm();
 });

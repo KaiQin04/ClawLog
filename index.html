@@ -229,11 +229,267 @@
       50% { transform: scale(1.05); background-color: #10B981; }
       100% { transform: scale(1); }
     }
+    
+    /* Fixed Mascot */
+    .fixed-mascot {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 80px;
+      height: 100px;
+      z-index: 1000;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .fixed-mascot:hover {
+      transform: scale(1.1);
+    }
+    
+    .fixed-mascot .mascot-mini {
+      width: 80px;
+      height: 100px;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .fixed-mascot .head {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    
+    .fixed-mascot .eyes {
+      position: absolute;
+      top: 18px;
+      width: 60px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .fixed-mascot .eye {
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .fixed-mascot .pupil {
+      width: 9px;
+      height: 9px;
+      background: #333;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      animation: lookAround 4s ease-in-out infinite;
+    }
+    
+    .fixed-mascot .mouth {
+      position: absolute;
+      top: 38px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 10px;
+      border-bottom: 2px solid #333;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .fixed-mascot .claw {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 30px;
+    }
+    
+    .fixed-mascot .claw-arm {
+      width: 3px;
+      height: 15px;
+      background: #666;
+      position: absolute;
+      left: 18.5px;
+      top: -15px;
+    }
+    
+    .fixed-mascot .claw-fingers {
+      position: absolute;
+      width: 40px;
+      height: 20px;
+      top: 0;
+      animation: grabbing 2s ease-in-out infinite;
+    }
+    
+    .fixed-mascot .finger {
+      position: absolute;
+      width: 12px;
+      height: 18px;
+      background: #FF6B6B;
+      border-radius: 6px 6px 10px 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    .fixed-mascot .finger-left {
+      left: 0;
+      transform: rotate(-15deg);
+      transform-origin: top center;
+    }
+    
+    .fixed-mascot .finger-center {
+      left: 14px;
+    }
+    
+    .fixed-mascot .finger-right {
+      right: 0;
+      transform: rotate(15deg);
+      transform-origin: top center;
+    }
+    
+    .speech-bubble {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      background: white;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 15px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 20px;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid white;
+    }
+    
+    .fixed-mascot:hover .speech-bubble {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 768px) {
+      .fixed-mascot {
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 80px;
+      }
+      
+      .fixed-mascot .mascot-mini {
+        width: 60px;
+        height: 80px;
+      }
+      
+      .fixed-mascot .head {
+        width: 45px;
+        height: 45px;
+        left: 7.5px;
+      }
+      
+      .fixed-mascot .eyes {
+        top: 14px;
+        width: 45px;
+        gap: 10px;
+      }
+      
+      .fixed-mascot .eye {
+        width: 12px;
+        height: 12px;
+      }
+      
+      .fixed-mascot .pupil {
+        width: 7px;
+        height: 7px;
+        top: 2.5px;
+        left: 2.5px;
+      }
+      
+      .fixed-mascot .mouth {
+        top: 28px;
+        width: 15px;
+        height: 8px;
+      }
+      
+      .fixed-mascot .claw {
+        width: 30px;
+        height: 25px;
+      }
+      
+      .fixed-mascot .claw-arm {
+        width: 2px;
+        height: 12px;
+        left: 14px;
+        top: -12px;
+      }
+      
+      .fixed-mascot .claw-fingers {
+        width: 30px;
+        height: 15px;
+      }
+      
+      .fixed-mascot .finger {
+        width: 9px;
+        height: 14px;
+      }
+      
+      .fixed-mascot .finger-center {
+        left: 10.5px;
+      }
+    }
   </style>
 </head>
 <body>
   <!-- Floating Particles Background -->
   <div class="floating-particles" id="particles"></div>
+  
+  <!-- Fixed Mascot -->
+  <div class="fixed-mascot" id="fixedMascot">
+    <div class="mascot-mini">
+      <div class="head">
+        <div class="eyes">
+          <div class="eye">
+            <div class="pupil"></div>
+          </div>
+          <div class="eye">
+            <div class="pupil"></div>
+          </div>
+        </div>
+        <div class="mouth"></div>
+      </div>
+      <div class="claw">
+        <div class="claw-arm"></div>
+        <div class="claw-fingers">
+          <div class="finger finger-left"></div>
+          <div class="finger finger-center"></div>
+          <div class="finger finger-right"></div>
+        </div>
+      </div>
+    </div>
+    <div class="speech-bubble" id="speechBubble">加油！今天手氣不錯喔！</div>
+  </div>
   
   <div class="container mx-auto p-4 fade-in-up">
     <!-- Header with Mascot -->
