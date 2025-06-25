@@ -25,34 +25,130 @@
     }
     
     .mascot {
+      width: 100px;
+      height: 120px;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+      margin: 0 auto;
+    }
+    
+    .mascot .head {
       width: 80px;
       height: 80px;
       background: linear-gradient(45deg, #FFD700, #FFA500);
       border-radius: 50%;
-      position: relative;
-      animation: bounce 2s infinite;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      position: absolute;
+      top: 0;
+      left: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     
-    .mascot::before {
-      content: '🎯';
+    .mascot .eyes {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2rem;
+      top: 25px;
+      width: 80px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
     }
     
-    .mascot::after {
-      content: '';
-      position: absolute;
-      top: -10px;
-      right: -10px;
+    .mascot .eye {
       width: 20px;
       height: 20px;
-      background: #FF6B6B;
+      background: white;
       border-radius: 50%;
-      animation: pulse 1.5s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mascot .pupil {
+      width: 12px;
+      height: 12px;
+      background: #333;
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      animation: lookAround 4s ease-in-out infinite;
+    }
+    
+    .mascot .mouth {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 15px;
+      border-bottom: 3px solid #333;
+      border-radius: 0 0 30px 30px;
+    }
+    
+    .mascot .claw {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 40px;
+    }
+    
+    .mascot .claw-arm {
+      width: 4px;
+      height: 20px;
+      background: #666;
+      position: absolute;
+      left: 28px;
+      top: -20px;
+    }
+    
+    .mascot .claw-fingers {
+      position: absolute;
+      width: 60px;
+      height: 30px;
+      top: 0;
+      animation: grabbing 2s ease-in-out infinite;
+    }
+    
+    .mascot .finger {
+      position: absolute;
+      width: 18px;
+      height: 25px;
+      background: #FF6B6B;
+      border-radius: 8px 8px 15px 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .mascot .finger-left {
+      left: 0;
+      transform: rotate(-20deg);
+      transform-origin: top center;
+    }
+    
+    .mascot .finger-center {
+      left: 21px;
+    }
+    
+    .mascot .finger-right {
+      right: 0;
+      transform: rotate(20deg);
+      transform-origin: top center;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes lookAround {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(5px, 0); }
+      50% { transform: translate(5px, 5px); }
+      75% { transform: translate(-5px, 0); }
+    }
+    
+    @keyframes grabbing {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); }
     }
     
     @keyframes bounce {
@@ -142,7 +238,27 @@
   <div class="container mx-auto p-4 fade-in-up">
     <!-- Header with Mascot -->
     <div class="text-center mb-8 relative">
-      <div class="mascot mx-auto mb-4"></div>
+      <div class="mascot mx-auto mb-4">
+        <div class="head">
+          <div class="eyes">
+            <div class="eye">
+              <div class="pupil"></div>
+            </div>
+            <div class="eye">
+              <div class="pupil"></div>
+            </div>
+          </div>
+          <div class="mouth"></div>
+        </div>
+        <div class="claw">
+          <div class="claw-arm"></div>
+          <div class="claw-fingers">
+            <div class="finger finger-left"></div>
+            <div class="finger finger-center"></div>
+            <div class="finger finger-right"></div>
+          </div>
+        </div>
+      </div>
       <div class="sparkle" style="top: 20px; left: 45%;">✨</div>
       <div class="sparkle" style="top: 30px; right: 45%; animation-delay: 0.5s;">⭐</div>
       <div class="sparkle" style="top: 10px; left: 55%; animation-delay: 1s;">✨</div>
