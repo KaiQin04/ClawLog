@@ -28,7 +28,7 @@ let editingId = null;
 let pointCost = 3.5;
 let filterText = '';
 let filterMonth = '';
-let sortField = 'createdAt';
+let sortField = 'date';
 
 // Initialize floating particles
 function createFloatingParticles() {
@@ -218,7 +218,7 @@ async function loadRecords() {
       profit: calculateProfit(data.spent, data.points, data.value),
     });
   }
-  records.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  records.sort((a, b) => b.date.localeCompare(a.date));
   saveLocalRecords();
   renderRecords();
 }
@@ -348,7 +348,6 @@ function renderRecords() {
     const tr = document.createElement('tr');
     tr.className = 'table-row hover:bg-white/10 transition-all duration-300';
     tr.innerHTML = `
-      <td class="text-white/90 px-4 py-3">${rec.createdAt}</td>
       <td class="text-white/90 px-4 py-3">${rec.date}</td>
       <td class="text-white/90 px-4 py-3">${rec.store}</td>
       <td class="text-white/90 px-4 py-3">$${rec.spent}</td>
@@ -466,9 +465,9 @@ tbody.addEventListener('click', async function(e) {
 
 // 匯出 CSV
 exportBtn.addEventListener('click', function() {
-  let csvContent = "建立時間,日期,店名,花費金額,得到點數,商品價值,當日盈虧\n";
+  let csvContent = "日期,店名,花費金額,得到點數,商品價值,當日盈虧\n";
   records.forEach(rec => {
-    csvContent += `${rec.createdAt},${rec.date},${rec.store},${rec.spent},${rec.points},${rec.value},${rec.profit}\n`;
+    csvContent += `${rec.date},${rec.store},${rec.spent},${rec.points},${rec.value},${rec.profit}\n`;
   });
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
