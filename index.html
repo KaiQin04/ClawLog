@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" integrity="sha384-AQ3POAMqIhwS81FrUH95ekxqBZHeP5tG2JfEL3+7GuTtfRLWnrRh32UxwzM+//A9" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" integrity="sha384-TnlRYaR4JYz/lpaGuaiU61PjNberSA4vjLjtF+oRC/IkohkJqnWxw5EmDSOt1vA1" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" integrity="sha384-qn4Jh88HhJA8dplNQyGjOh9OGI4izVhrfj/qIFgaKcdgOE06pXqIKGlsCILZcLAC" crossorigin="anonymous"></script>
   <title>🎯 夾娃娃機遊玩記錄</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
@@ -538,6 +538,12 @@
       <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
         🎮 新增遊戲記錄
       </h2>
+      <p id="appStatus" role="status" aria-live="polite" class="text-white mb-4">請登入後管理紀錄。</p>
+      <aside id="legacyCacheNotice" class="legacy-notice mb-4" hidden>
+        <p>此瀏覽器仍保留舊版、未標示擁有者的本機資料。請由原使用者先下載並確認備份，再清除舊快取。這些資料不會顯示在紀錄表，也不會自動歸入任何帳號；清除前仍可能被使用此瀏覽器的人存取。</p>
+        <button id="legacyDownloadBtn" type="button" class="glass-effect text-white px-3 py-2 rounded-lg mt-4">下載舊快取備份</button>
+        <button id="legacyClearBtn" type="button" disabled class="glass-effect text-white px-3 py-2 rounded-lg mt-4">已確認備份，清除舊快取</button>
+      </aside>
       <form id="recordForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="space-y-2">
           <label class="text-white font-medium flex items-center gap-1" for="dateInput">
@@ -647,7 +653,7 @@
           <tbody id="recordTbody" class="divide-y divide-white/20"></tbody>
           <tfoot>
             <tr class="glass-effect font-bold border-t-2 border-white/30">
-              <td class="text-white px-4 py-3 rounded-bl-lg" colspan="3">🏆 總計</td>
+              <td class="text-white px-4 py-3 rounded-bl-lg" colspan="2">🏆 總計</td>
               <td class="text-white px-4 py-3" id="totalSpent"></td>
               <td class="text-white px-4 py-3" id="totalPoints"></td>
               <td class="text-white px-4 py-3" id="totalValue"></td>
@@ -688,6 +694,7 @@
 
     firebase.initializeApp(firebaseConfig);
   </script>
+  <script src="data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
